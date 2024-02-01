@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Mobile.TimePage">
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="#2e280b">
+            <Label 
+                x:Name="lbl"
+                Text="Vajuta siia!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" 
+                BackgroundColor="#2c5c24"
+                TextColor="#1cd000"
+                FontSize="Title"
+                Margin="30, 20, 30, 20"
+                Padding="20"
+                TextDecorations="Underline">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                    </Label.GestureRecognizers>
+            </Label>
+            <Button 
+                x:Name="Time_run_btn" 
+                Text="Näita kella aeg"
+                FontSize="Medium"
+                BackgroundColor = "#5e0051"
+                TextColor = "#ff6fff"
+                Clicked="Time_run_btn_Clicked">
+                
+            </Button>
+            <Button 
+                x:Name="Close_btn" 
+                Text="Tagasi"
+                FontSize="Medium"
+                BackgroundColor = "#6c0000"
+                TextColor = "#d00000"
+                Clicked="Close_btn_Clicked">
+
+            </Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
