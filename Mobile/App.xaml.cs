@@ -10,7 +10,7 @@ namespace Mobile
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new StartPage());
+            MainPage = new NavigationPage(new Startpage2_0());
         }
 
         protected override void OnStart()
