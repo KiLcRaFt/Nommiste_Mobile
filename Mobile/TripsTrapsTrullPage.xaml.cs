@@ -124,17 +124,17 @@ namespace Mobile
 
                 if (xWins)
                 {
-                    DisplayAlert("X Võidab", "Kui soovite mängu taaskäivitamist, klõpsake mis tahes nupule", "OK");
+                    DisplayAlert("X Võidab", "Ristikud Võidavad", "OK");
                     break;
                 }
                 if (oWins)
                 {
-                    DisplayAlert("O Võidab", "Kui soovite mängu taaskäivitamist, klõpsake mis tahes nupule", "OK");
+                    DisplayAlert("O Võidab", "Nollid Võidabad", "OK");
                     break;
                 }
                 else
                 {
-                    DisplayAlert("Viik", "Kui soovite mängu taaskäivitamist, klõpsake mis tahes nupule", "OK");
+                    DisplayAlert("Viik", "Unlack", "OK");
                     break;
                 }
             }
