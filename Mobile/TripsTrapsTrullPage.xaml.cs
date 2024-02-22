@@ -21,11 +21,9 @@ namespace Mobile
         Button btn;
         Label player;
         int taps = 1;
-        List<int> kresti_row = new List<int>();
-        List<int> kresti_column = new List<int>();
+        List<Frame> tapped = new List<Frame>();
+        List<Frame> untapped = new List<Frame>();
 
-        List<int> nolli_row = new List<int>();
-        List<int> nolli_column = new List<int>();
         public TripsTrapsTrullPage()
         {
             
@@ -88,24 +86,23 @@ namespace Mobile
             Frame fr = (Frame)sender;
             if (fr.Content == null)
             {
-                var rida = Grid.GetRow(fr);
-                var column = Grid.GetColumn(fr);
+
 
                 if (taps % 2 == 0)
                 {
                     krest = new Image { Source = "krest.png" };
                     fr.Content = krest;
                     player.Text = "Ristikud käivad";
-                    kresti_row.Add(rida);
-                    kresti_column.Add(column);
+                    tapped.Add(fr);
+                    untapped.Remove(fr);
                 }
                 else
                 {
                     noll = new Image { Source = "noll.png" };
                     fr.Content = noll;
                     player.Text = "Nollid käivad";
-                    nolli_row.Add(rida);
-                    nolli_column.Add(column);
+                    tapped.Add(fr);
+                    untapped.Remove(fr);
                 }
                 taps++;
             }
@@ -113,9 +110,61 @@ namespace Mobile
         }
         private void WOL()
         {
+            foreach (var winCondition in Winconditions())
+            {
+                bool xWins = true;
+                bool oWins = true;
+                foreach (var content in winCondition)
+                {
+                    if (content != null && content.Source.ToString() == "krest.png")
+                        oWins = false;
+                    if (content != null && content.Source.ToString() == "noll.png")
+                        xWins = false;
+                }
 
+                if (xWins)
+                {
+                    DisplayAlert("X Võidab", "Kui soovite mängu taaskäivitamist, klõpsake mis tahes nupule", "OK");
+                    break;
+                }
+                if (oWins)
+                {
+                    DisplayAlert("O Võidab", "Kui soovite mängu taaskäivitamist, klõpsake mis tahes nupule", "OK");
+                    break;
+                }
+                else
+                {
+                    DisplayAlert("Viik", "Kui soovite mängu taaskäivitamist, klõpsake mis tahes nupule", "OK");
+                    break;
+                }
+            }
+        }
+        private List<List<Image>> Winconditions()
+        {
+            List<List<Image>> winConditions = new List<List<Image>>();
 
-            // 8 pobed == 3 vertikalno, 3 gorizontalno, 2 diagonal
+            winConditions.Add(new List<Image> { GetImage(0, 0), GetImage(1, 0), GetImage(2, 0) });
+            winConditions.Add(new List<Image> { GetImage(0, 1), GetImage(1, 1), GetImage(2, 1) });
+            winConditions.Add(new List<Image> { GetImage(0, 2), GetImage(1, 2), GetImage(2, 2) });
+
+            winConditions.Add(new List<Image> { GetImage(0, 0), GetImage(0, 1), GetImage(0, 2) });
+            winConditions.Add(new List<Image> { GetImage(1, 0), GetImage(1, 1), GetImage(1, 2) });
+            winConditions.Add(new List<Image> { GetImage(2, 0), GetImage(2, 1), GetImage(2, 2) });
+
+            winConditions.Add(new List<Image> { GetImage(0, 0), GetImage(1, 1), GetImage(2, 2) });
+            winConditions.Add(new List<Image> { GetImage(0, 2), GetImage(1, 1), GetImage(2, 0) });
+
+            return winConditions;
+        }
+
+        private Image GetImage(int row, int column)
+        {
+            foreach (var child in grid.Children)
+            {
+                if (Grid.GetRow(child) == row && Grid.GetColumn(child) == column)
+                    return (Image)child;
+            }
+            return null;
         }
     }
 }
