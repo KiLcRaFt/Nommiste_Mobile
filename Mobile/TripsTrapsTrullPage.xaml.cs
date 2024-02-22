@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace Mobile
 
         public TripsTrapsTrullPage()
         {
-            
+
             grid = new Grid
             {
                 BackgroundColor = Color.Black,
@@ -82,7 +83,7 @@ namespace Mobile
 
         private void Tap_Tapped(object sender, EventArgs e)
         {
-            
+
             Frame fr = (Frame)sender;
             if (fr.Content == null)
             {
@@ -92,7 +93,7 @@ namespace Mobile
                 {
                     krest = new Image { Source = "krest.png" };
                     fr.Content = krest;
-                    player.Text = "Ristikud käivad";
+                    player.Text = "Nollid käivad";
                     tapped.Add(fr);
                     untapped.Remove(fr);
                 }
@@ -100,7 +101,7 @@ namespace Mobile
                 {
                     noll = new Image { Source = "noll.png" };
                     fr.Content = noll;
-                    player.Text = "Nollid käivad";
+                    player.Text = "Ristikud käivad";
                     tapped.Add(fr);
                     untapped.Remove(fr);
                 }
@@ -114,29 +115,44 @@ namespace Mobile
             {
                 bool xWins = true;
                 bool oWins = true;
-                foreach (var content in winCondition)
+                foreach (var image in winCondition)
                 {
-                    if (content != null && content.Source.ToString() == "krest.png")
+                    if (image == null)
+                    {
                         oWins = false;
-                    if (content != null && content.Source.ToString() == "noll.png")
                         xWins = false;
+                    }
+                    else
+                    {
+                        var imageSource = image.Source as FileImageSource;
+                        if (imageSource != null)
+                        {
+                            if (imageSource.File == "noll.png")
+                            {
+                                oWins = false;
+                            }
+                            else if (imageSource.File == "krest.png")
+                            {
+                                xWins = false;
+                            }
+                        }
+                    }
                 }
 
                 if (xWins)
                 {
-                    DisplayAlert("X Võidab", "Ristikud Võidavad", "OK");
+                    DisplayAlert("O Võidab", "Nollid Võidabad", "OK");
                     break;
                 }
                 if (oWins)
                 {
-                    DisplayAlert("O Võidab", "Nollid Võidabad", "OK");
+                    DisplayAlert("X Võidab", "Ristikud Võidavad", "OK");
                     break;
                 }
-                else
-                {
-                    DisplayAlert("Viik", "Unlack", "OK");
-                    break;
-                }
+            }
+            if (grid.Children.All(child => (child as Image)?.Source != null))
+            {
+                DisplayAlert("Viik", "Unlack", "OK");
             }
         }
         private List<List<Image>> Winconditions()
@@ -161,8 +177,14 @@ namespace Mobile
         {
             foreach (var child in grid.Children)
             {
-                if (Grid.GetRow(child) == row && Grid.GetColumn(child) == column)
-                    return (Image)child;
+                if (child is Frame && Grid.GetRow(child) == row && Grid.GetColumn(child) == column)
+                {
+                    var frame = (Frame)child;
+                    if (frame.Content is Image)
+                    {
+                        return (Image)frame.Content;
+                    }
+                }
             }
             return null;
         }
