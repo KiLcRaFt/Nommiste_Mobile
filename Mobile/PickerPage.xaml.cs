@@ -20,14 +20,15 @@ namespace Mobile
         AbsoluteLayout abs;
         Entry entry;
         Button btn_Home, btn_history, btn_back;
-        List<string> lehed = new List<string> { "https://github.com/KiLcRaFt", "https://moodle.edu.ee/course/view.php?id=37973", "https://www.tthk.ee/" };
-        List<string> nimetused = new List<string> { "Github", "Moodle", "TTHK" };
-        List<string> history = new List<string> { };
+        List<string> lehed = new List<string> { "https://google.com" ,"https://github.com/KiLcRaFt", "https://moodle.edu.ee/course/view.php?id=37973", "https://www.tthk.ee/" };
+        List<string> nimetused = new List<string> { "Google", "Github", "Moodle", "TTHK" };
+        List<string> history = new List<string> { "https://google.com" };
         public PickerPage()
         {
             picker = new Picker
             {
-                Title = "Veebilehed"
+                Title = "Veebilehed",
+                HeightRequest = 50
             };
             foreach (string leht in nimetused)
             {
@@ -41,24 +42,24 @@ namespace Mobile
 
             webView = new WebView
             {
-                Source = new UrlWebViewSource{ Url= lehed[0] },
-                HeightRequest = 600,
-                WidthRequest=100
+                Source = new UrlWebViewSource { Url = lehed[0] },
+                HeightRequest = 550,
+                WidthRequest = width
             };
-            picker.SelectedIndex= 0;
+            picker.SelectedIndex = 0;
             SwipeGestureRecognizer swipe_R = new SwipeGestureRecognizer
             {
-                Direction=SwipeDirection.Right
+                Direction = SwipeDirection.Right
             };
             swipe_R.Swiped += Swipe_Swiped;
-            SwipeGestureRecognizer swipe_L = new SwipeGestureRecognizer { Direction=SwipeDirection.Left };
+            SwipeGestureRecognizer swipe_L = new SwipeGestureRecognizer { Direction = SwipeDirection.Left };
             swipe_L.Swiped += Swipe_L_Swiped;
 
             //Entry ------------------------------------------------------------
 
             entry = new Entry
             {
-
+                HeightRequest = 50
             };
             entry.Completed += Entry_Completed;
 
@@ -66,57 +67,110 @@ namespace Mobile
 
             btn_Home = new Button
             {
-                Text="Home",
-                BackgroundColor= Color.WhiteSmoke,
-                HeightRequest = 25,
-                WidthRequest = 50,
-                CornerRadius = 20
-            };
-            AbsoluteLayout.SetLayoutBounds(btn_Home, new Rectangle(0.01, 0.05, 50, 25));
-            AbsoluteLayout.SetLayoutFlags(btn_Home, AbsoluteLayoutFlags.PositionProportional);
-
-            btn_history = new Button
-            {
-                Text= "History",
+                Text = "Home",
                 BackgroundColor = Color.WhiteSmoke,
                 HeightRequest = 25,
                 WidthRequest = 50,
-                CornerRadius = 20
+                CornerRadius = 20,
+                FontSize= 11
             };
 
-            AbsoluteLayout.SetLayoutBounds(btn_history, new Rectangle(0.06, 0.05, 50, 25));
-            AbsoluteLayout.SetLayoutFlags(btn_history, AbsoluteLayoutFlags.PositionProportional);
+            btn_Home.Clicked += Btn_Home_Clicked;
+
+            btn_history = new Button
+            {
+                Text = "History",
+                BackgroundColor = Color.Gray,
+                HeightRequest = 25,
+                WidthRequest = 50,
+                CornerRadius = 20,
+                FontSize = 11
+            };
+
+            btn_history.Clicked += Btn_history_Clicked;
+
 
             btn_back = new Button
             {
                 Text = "<-",
-                BackgroundColor = Color.WhiteSmoke,
+                BackgroundColor = Color.Green,
                 HeightRequest = 25,
                 WidthRequest = 50,
-                CornerRadius = 20
+                CornerRadius = 20,
+                FontSize = 11
             };
-            AbsoluteLayout.SetLayoutBounds(btn_back, new Rectangle(0.11, 0.5, 50, 25));
-            AbsoluteLayout.SetLayoutFlags(btn_back, AbsoluteLayoutFlags.PositionProportional);
 
+            btn_back.Clicked += Btn_back_Clicked;
 
 
             picker.SelectedIndexChanged += Valime_leht_avamiseks;
+
+
+            Grid grid = new Grid
+            {
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                
+                Children = { picker, entry, webView }
+            };
+            for (int i = 0; i < 3; i++)
+            {
+                grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(40, GridUnitType.Absolute) });
+            }
+
+            grid.Children.Add(picker, 0, 0);
+            Grid.SetColumnSpan(picker, 8);
+
+            grid.Children.Add(entry, 0, 1);
+            Grid.SetColumnSpan(entry, 8);
+
+            grid.Children.Add(btn_Home, 0, 2);
+            Grid.SetColumnSpan(btn_Home, 2);
+            grid.Children.Add(btn_history, 2, 2);
+            Grid.SetColumnSpan(btn_history, 2);
+            grid.Children.Add(btn_back, 4, 2);
+            Grid.SetColumnSpan(btn_back, 2);
+
             st = new StackLayout
             {
-                Children = { picker, entry, webView}
+                Children = { grid, webView }
             };
+
             st.GestureRecognizers.Add(swipe_R);
             st.GestureRecognizers.Add(swipe_L);
 
-            AbsoluteLayout.SetLayoutBounds(st, new Rectangle(0, 0.05, 400, 800));
-            AbsoluteLayout.SetLayoutFlags(st, AbsoluteLayoutFlags.PositionProportional);
+            Content = st;
 
-            abs = new AbsoluteLayout
+        }
+
+        private void Btn_back_Clicked(object sender, EventArgs e)
+        {
+            if (history.Any())
             {
-                Children = { btn_Home, btn_history, btn_back, st }
-            };
-            Content = abs;
+                webView.GoBack();
+                string url = webView.Source.ToString();
+                picker.SelectedIndex = lehed.IndexOf(url);
+                //int ind = lehed.IndexOf(history[history.Count() -1]);
+                //picker.SelectedIndex = ind;
+                //webView.Source = new UrlWebViewSource { Url = lehed[ind] };
 
+
+            }
+        }
+
+        private void Btn_Home_Clicked(object sender, EventArgs e)
+        {
+            webView.Source = lehed[0];
+            picker.SelectedIndex = 0;
+
+        }
+
+        private async void Btn_history_Clicked(object sender, EventArgs e)
+        {
+            string[] historyy = history.ToArray();
+            var url = await DisplayActionSheet("Ajalugu", "Lobbu", null, historyy);
+            webView.Source = url;
+            picker.SelectedIndex = lehed.IndexOf(url);
         }
 
         private void Entry_Completed(object sender, EventArgs e)
@@ -133,7 +187,6 @@ namespace Mobile
                 var urll = lehed[picker.SelectedIndex];
                 DisplayAlert("Navigation", $"Opening {lehed[lastIndex]}", "OK");
                 webView.Source = new UrlWebViewSource { Url = lehed[lastIndex] };
-                history.Add(lehed[lastIndex]);
             }
         }
 
