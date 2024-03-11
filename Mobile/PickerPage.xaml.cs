@@ -148,8 +148,8 @@ namespace Mobile
             if (history.Any())
             {
                 webView.GoBack();
-                string url = webView.Source.ToString();
-                picker.SelectedIndex = lehed.IndexOf(url);
+                //string url = webView.Source.ToString();
+                //picker.SelectedIndex = lehed.IndexOf(url);
                 //int ind = lehed.IndexOf(history[history.Count() -1]);
                 //picker.SelectedIndex = ind;
                 //webView.Source = new UrlWebViewSource { Url = lehed[ind] };
