@@ -19,10 +19,12 @@ namespace Mobile
         StackLayout st;
         AbsoluteLayout abs;
         Entry entry;
-        Button btn_Home, btn_history, btn_back;
+        ImageButton imgBtn;
+        Button btn_Home, btn_history, btn_back, btn_favorite;
         List<string> lehed = new List<string> { "https://google.com" ,"https://github.com/KiLcRaFt", "https://moodle.edu.ee/course/view.php?id=37973", "https://www.tthk.ee/" };
         List<string> nimetused = new List<string> { "Google", "Github", "Moodle", "TTHK" };
         List<string> history = new List<string> { "https://google.com" };
+        List<string> favorite = new List<string> { "https://twitch.tv" };
         public PickerPage()
         {
             picker = new Picker
@@ -68,7 +70,7 @@ namespace Mobile
             btn_Home = new Button
             {
                 Text = "Home",
-                BackgroundColor = Color.WhiteSmoke,
+                BackgroundColor = Color.Gray,
                 HeightRequest = 25,
                 WidthRequest = 50,
                 CornerRadius = 20,
@@ -93,7 +95,7 @@ namespace Mobile
             btn_back = new Button
             {
                 Text = "<-",
-                BackgroundColor = Color.Green,
+                BackgroundColor = Color.Gray,
                 HeightRequest = 25,
                 WidthRequest = 50,
                 CornerRadius = 20,
@@ -102,6 +104,27 @@ namespace Mobile
 
             btn_back.Clicked += Btn_back_Clicked;
 
+            btn_favorite = new Button
+            {
+                Text = "Lemmikud",
+                BackgroundColor = Color.Gray,
+                HeightRequest = 25,
+                WidthRequest = 50,
+                CornerRadius = 20,
+                FontSize = 11
+            };
+            btn_favorite.Clicked += Btn_favorite_Clicked;
+
+            //---------------------------------------------------
+
+            imgBtn = new ImageButton
+            {
+                Source = "~/Nommiste_Mobile/Mobile.Android/Resources/drawable/favorite.png",
+                HeightRequest = 25,
+                WidthRequest = 50
+            };
+
+            imgBtn.Clicked += ImgBtn_Clicked;
 
             picker.SelectedIndexChanged += Valime_leht_avamiseks;
 
@@ -130,6 +153,12 @@ namespace Mobile
             Grid.SetColumnSpan(btn_history, 2);
             grid.Children.Add(btn_back, 4, 2);
             Grid.SetColumnSpan(btn_back, 2);
+            grid.Children.Add(btn_favorite, 6, 2);
+            Grid.SetColumnSpan(btn_favorite, 2);
+
+            grid.Children.Add(imgBtn, 8, 2);
+            Grid.SetColumnSpan(imgBtn, 2);
+
 
             st = new StackLayout
             {
@@ -141,6 +170,28 @@ namespace Mobile
 
             Content = st;
 
+        }
+
+        private void ImgBtn_Clicked(object sender, EventArgs e)
+        {
+            var Url = (webView.Source as UrlWebViewSource)?.Url;
+            favorite.Add(Url);
+        }
+
+        private async void Btn_favorite_Clicked(object sender, EventArgs e)
+        {
+            string[] favoritee = favorite.ToArray();
+            var urll = await DisplayActionSheet("Lemmik", "Lobbu", null, favoritee);
+            webView.Source = urll;
+            if (lehed.Contains(urll))
+            {
+                picker.SelectedIndex = lehed.IndexOf(urll);
+            }
+            else
+            {
+                lehed.Add(urll);
+                picker.SelectedIndex = lehed.IndexOf(urll);
+            }
         }
 
         private void Btn_back_Clicked(object sender, EventArgs e)
