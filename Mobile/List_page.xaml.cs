@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -55,6 +55,8 @@ namespace Mobile
             };
             lisa_btn.Clicked += Lisa_btn_Clicked;
 
+            //--------------------------------------
+
             list = new ListView
             {
                 SeparatorColor = Color.Blue,
@@ -100,9 +102,14 @@ namespace Mobile
             this.Content = new StackLayout { Children = { lbl_list, list, lisa_btn, kustuta_btn } };
         }
 
-        private void Lisa_btn_Clicked(object sender, EventArgs e)
+        private async void Lisa_btn_Clicked(object sender, EventArgs e)
         {
-            telefons.Add(new Telefon { Nimetus = "Telefon", Tootaja = "Tootaja", Hind = 1 });
+            string nimetus = await DisplayPromptAsync("Sisesta nimetus ", "Sisesta nimetus ");
+            string tootaja = await DisplayPromptAsync("Siseta tootaja", "Siseta tootaja ");
+            string hind = await DisplayPromptAsync("Sisesta hind", "Sisesta hind ");
+            var photo = await MediaPicker.PickPhotoAsync();
+            var img = photo.FileName;
+            telefons.Add(new Telefon { Nimetus = nimetus, Tootaja = tootaja, Hind = Convert.ToInt32(hind), Pilt = img });
         }
 
         private void Kustuta_btn_Clicked(object sender, EventArgs e)
