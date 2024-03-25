@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -17,7 +20,7 @@ namespace Mobile
     {
         public string Nimetus { get; set; }
         public string Tootaja { get; set; }
-        public int Hind { get; set; }
+        public string Hind { get; set; }
         public string Pilt { get; set; }
     }
     public partial class List_page : ContentPage
@@ -30,10 +33,10 @@ namespace Mobile
         {
             telefons = new ObservableCollection<Telefon>
             {
-            new Telefon {Nimetus= "Iphone 13", Tootaja = "Apple", Hind = 1299, Pilt="iphone.jpg"},
-            new Telefon {Nimetus= "Samsung galaxy S9", Tootaja = "Samsung", Hind = 899, Pilt = "samsung.jpg"},
-            new Telefon {Nimetus= "Huawei P10", Tootaja = "Huawei", Hind = 680, Pilt = "huawei.jpg"},
-            new Telefon {Nimetus= "LG G6", Tootaja = "LG", Hind = 760, Pilt = "lg.jpg"}
+            new Telefon {Nimetus= "Iphone 13", Tootaja = "Apple", Hind = "1299", Pilt="iphone.jpg"},
+            new Telefon {Nimetus= "Samsung galaxy S9", Tootaja = "Samsung", Hind = "899", Pilt = "samsung.jpg"},
+            new Telefon {Nimetus= "Huawei P10", Tootaja = "Huawei", Hind = "680", Pilt = "huawei.jpg"},
+            new Telefon {Nimetus= "LG G6", Tootaja = "LG", Hind = "760", Pilt = "lg.jpg"}
             };
 
             lbl_list = new Label
@@ -87,7 +90,7 @@ namespace Mobile
 
                     //        }
                     //    };
-                    ImageCell imageCell = new ImageCell { TextColor = Color.Red, DetailColor = Color.Green };
+                    ImageCell imageCell = new ImageCell { TextColor = Color.Red, DetailColor = Color.Green};
                     imageCell.SetBinding(ImageCell.TextProperty, "Nimetus");
                     Binding companyBinding = new Binding { Path = "Tootaja", StringFormat = "Tore telefon firmalt {0}"};
                     imageCell.SetBinding(ImageCell.DetailProperty, companyBinding);
@@ -104,14 +107,14 @@ namespace Mobile
 
         private async void Lisa_btn_Clicked(object sender, EventArgs e)
         {
-            string nimetus = await DisplayPromptAsync("Sisesta nimetus ", "Sisesta nimetus ");
-            string tootaja = await DisplayPromptAsync("Siseta tootaja", "Siseta tootaja ");
-            string hind = await DisplayPromptAsync("Sisesta hind", "Sisesta hind ");
-            var photo = await MediaPicker.PickPhotoAsync();
-            var img = photo.FileName;
-            telefons.Add(new Telefon { Nimetus = nimetus, Tootaja = tootaja, Hind = Convert.ToInt32(hind), Pilt = img });
-        }
+            string nimetus = await DisplayPromptAsync("Sisesta nimetus ", "Sisesta nimetus ", keyboard: Keyboard.Default);
+            string tootaja = await DisplayPromptAsync("Siseta tootaja", "Siseta tootaja ", keyboard: Keyboard.Default);
+            string hind = await DisplayPromptAsync("Sisesta hind", "Sisesta hind ", keyboard: Keyboard.Numeric);
+            //var photo = await MediaPicker.PickPhotoAsync();
+            //var img = photo.FileName;
 
+            telefons.Add(new Telefon { Nimetus = nimetus, Tootaja = tootaja, Hind = hind, Pilt = "defaultRayan.jpg" });
+        }
         private void Kustuta_btn_Clicked(object sender, EventArgs e)
         {
             Telefon phone = list.SelectedItem as Telefon;
@@ -127,7 +130,7 @@ namespace Mobile
             Telefon selectedPhone = e.Item as Telefon;
             if (selectedPhone != null)
             {
-                await DisplayAlert("Выбранная модель", $"{selectedPhone.Tootaja} - {selectedPhone.Nimetus}", "OK");
+                await DisplayAlert("Выбранная модель", $"{selectedPhone.Tootaja} - {selectedPhone.Nimetus} \n Hind on: {selectedPhone.Hind}", "OK");
             }
         }
 

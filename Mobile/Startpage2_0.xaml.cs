@@ -14,11 +14,11 @@ namespace Mobile
     {
             List<ContentPage> pages = new List<ContentPage>()
             {
-                new EntryPage(), new TimePage(), new BoxPage(), new lumememm(),  new FramePage(), new TripsTrapsTrullPage(), new PickerPage(), new Table_Page(), new List_page()
+                new EntryPage(), new TimePage(), new BoxPage(), new lumememm(),  new FramePage(), new TripsTrapsTrullPage(), new PickerPage(), new Table_Page(), new List_page(), new Riigid()
             };
             List<string> texts = new List<string>()
             {
-                "Ava entry","Ava timer leht", "Ava Box leht", "Ava lumemmem leht", "Ava Frame leht", "Ava Trips Traps Trull leht", "Ava Picker leht", "TableView leht", "List leht"
+                "Ava entry","Ava timer leht", "Ava Box leht", "Ava lumemmem leht", "Ava Frame leht", "Ava Trips Traps Trull leht", "Ava Picker leht", "TableView leht", "List leht", "Riigid"
             };
             StackLayout st;
             public Startpage2_0()
