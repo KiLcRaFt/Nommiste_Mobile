@@ -137,10 +137,10 @@ namespace Mobile
                 string rahvaarv = await DisplayPromptAsync("Sisesta rahvaarv", "Sisesta rahvaarv ", keyboard: Keyboard.Numeric);
                 string kontinent = await DisplayPromptAsync("Vali kontinent", "Vali euroopa (1) või ameerika (0) ", keyboard: Keyboard.Numeric);
 
-                //var photo = await MediaPicker.PickPhotoAsync();
-                //var img = photo.FileName;
+                var photo = await MediaPicker.PickPhotoAsync();
+                var img = photo.FileName;
 
-                riigid.Add(new Riik { nimi = nimi, pealinn = pealinn, rahvaarv = rahvaarv, lipp = "defaultRayan.jpg", continent = Convert.ToInt32(kontinent) });
+                riigid.Add(new Riik { nimi = nimi, pealinn = pealinn, rahvaarv = rahvaarv, lipp = img, continent = Convert.ToInt32(kontinent) });
                 if (Convert.ToInt32(kontinent) == 1)
                     EuroopaRiigid.Add(riigid.Last());
                 else if (Convert.ToInt32(kontinent) == 0)
@@ -159,13 +159,13 @@ namespace Mobile
             if (euroopaListView.SelectedItem != null)
             {
                 riik = euroopaListView.SelectedItem as Riik;
-                riigid.Remove(riik);
+                EuroopaRiigid.Remove(riik);
                 euroopaListView.SelectedItem = null;
             }
             else if (ameerikaListView.SelectedItem != null)
             {
                 riik = ameerikaListView.SelectedItem as Riik;
-                riigid.Remove(riik);
+                AmeerikaRiigid.Remove(riik);
                 ameerikaListView.SelectedItem = null;
             }
         }
