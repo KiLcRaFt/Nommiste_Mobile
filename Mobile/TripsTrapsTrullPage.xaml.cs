@@ -19,7 +19,7 @@ namespace Mobile
         AbsoluteLayout abs;
         Frame fr;
         Image krest, noll;
-        Button btn;
+        Button btn, btn2;
         Label player;
         int taps = 1;
         List<Frame> tapped = new List<Frame>();
@@ -34,6 +34,7 @@ namespace Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
+
             TapGestureRecognizer tap = new TapGestureRecognizer();
             tap.Tapped += Tap_Tapped;
             tap.NumberOfTapsRequired = 1;
@@ -56,14 +57,26 @@ namespace Mobile
                     fr.GestureRecognizers.Add(tap);
                 }
             }
+
             player = new Label
             {
-                Text = "Nollid käivad",
+                Text = "Nollid käivad"
             };
+
+            btn = new Button
+            {
+                Text = "Uus mäng"
+            };
+            btn.Clicked += Btn_Clicked; 
+            btn2 = new Button
+            {
+                Text = "Kes on esimene?"
+            };
+            btn2.Clicked += Btn2_Clicked;
 
             st = new StackLayout
             {
-                Children = { player }
+                Children = { player, btn, btn2 }
             };
 
             abs = new AbsoluteLayout
@@ -80,7 +93,39 @@ namespace Mobile
 
         }
 
+        private void Btn2_Clicked(object sender, EventArgs e)
+        {
+            if(player.Text == "Nollid käivad")
+            {
+                taps = 2;
+                player.Text = "Ristikud käivad";
+            }
+            else if(player.Text == "Ristikud käivad")
+            {
+                taps = 1;
+                player.Text = "Nollid käivad";
+            }
+        }
 
+        private void Btn_Clicked(object sender, EventArgs e)
+        {
+            Newgame();
+        }
+
+        public void Newgame()
+        {
+            foreach (var child in grid.Children)
+            {
+                if (child is Frame frame)
+                {
+                    frame.Content = null;
+                }
+            }
+            taps = 1;
+            player.Text = "Nollid käivad";
+            tapped.Clear();
+            untapped.Clear();
+        }
         private void Tap_Tapped(object sender, EventArgs e)
         {
 
@@ -109,7 +154,7 @@ namespace Mobile
             }
             WOL();
         }
-        private void WOL()
+        private async void WOL()
         {
             foreach (var winCondition in Winconditions())
             {
@@ -141,18 +186,37 @@ namespace Mobile
 
                 if (xWins)
                 {
-                    DisplayAlert("O Võidab", "Nollid Võidabad", "OK");
+                    await DisplayAlert("O Võidab", "Nollid Võidabad", "OK");
+                    bool answer = await DisplayAlert("Mida me teeme?", "Kas te tahate mängu jätkama", "Jah", "Ei");
+                    if (answer) 
+                    {
+                        winCondition.Clear();
+                        Newgame();   
+                    }
                     break;
                 }
                 if (oWins)
                 {
-                    DisplayAlert("X Võidab", "Ristikud Võidavad", "OK");
+                    await DisplayAlert("X Võidab", "Ristikud Võidavad", "OK");
+                    bool answer = await DisplayAlert("Mida me teeme?", "Kas te tahate mängu jätkama", "Jah", "Ei");
+                    if (answer)
+                    {
+
+                        winCondition.Clear();
+                        Newgame();
+                    }
                     break;
                 }
             }
             if (grid.Children.All(child => (child as Image)?.Source != null))
             {
-                DisplayAlert("Viik", "Unlack", "OK");
+                await DisplayAlert("Viik", "Unlack", "OK");
+                bool answer = await DisplayAlert("Mida me teeme?", "Kas te tahate mängu jätkama", "Jah", "Ei");
+                if (answer)
+                {
+                    Newgame();
+                }
+                
             }
         }
         private List<List<Image>> Winconditions()
